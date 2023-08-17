@@ -1,7 +1,12 @@
+import openai
 import streamlit as st
 
+st.title("ChatGPT-like Clone")
 
-st.title("Echo Bot")
+openai.api_key = st.secrets["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"]
+
+if "openai_model" not in st.session_state:
+    st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -13,23 +18,27 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # React to user input
-if prompt := st.chat_input("What is up?"):
+if prompt:
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    response = f"Echo: {prompt}"
-    # Display assistant response in chat message container
     with st.chat_message("assistant"):
-        st.markdown(response)
-
-    # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": response})
-
-with st.chat_message("assistant", avatar="🤠"):
-    st.write("Hello 👋")
-    #st.bar_chart(np.random.randn(30, 3))
+        message_placeholder = st.empty()
+        full_response = ""
+        for response in openai.ChatCompletion.create(
+            model=st.session_state["openai_model"],
+            messages=[
+                {"role": m["role"], "content": m["content"]}
+                for m in st.session_state.messages
+            ],
+            stream=True,
+        ):
+            full_response += response.choices[0].delta.get("content", "")
+            message_placeholder.markdown(full_response + " ")
+        message_placeholder.markdown(full_response)
+    st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 

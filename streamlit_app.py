@@ -1,4 +1,4 @@
-pip install --upgrade openai
+!pip install openai
 
 import openai
 import streamlit as st

@@ -3,8 +3,10 @@ import streamlit as st
 
 st.title("ChatGPT-like Clone")
 
+# Set OpenAI API key from Streamlit secrets
 openai.api_key = st.secrets["YOUR_API_KEY"]
 
+# Set a default model
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
@@ -25,7 +27,7 @@ if prompt := st.chat_input("What is up?"):
     with st.chat_message("user"):
         st.markdown(prompt)
     # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    # st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("assistant"):
         message_placeholder = st.empty()

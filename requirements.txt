@@ -2,6 +2,7 @@
 snowflake-connector-python
 openai
 streamlit
+databutton
 
 embedchain
 cohere
